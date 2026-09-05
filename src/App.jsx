@@ -1,9 +1,11 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Button from "./components/Button";
-import Alert from "./components/Alert"
+import Alert from "./components/Alert";
+import { performRegressionTest } from "./lib/performRegressionTest.js"
 
 function App() {
   const [alertVisible, setAlertVisibility] = useState(false)
+  useEffect(() => { console.log(performRegressionTest(true)) }, [])
 
   return (
     <div>
