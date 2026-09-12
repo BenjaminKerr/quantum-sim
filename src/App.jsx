@@ -1,15 +1,15 @@
 import { useState, useEffect } from "react"
 import Button from "./components/Button";
 import Alert from "./components/Alert";
-import { performRegressionTest } from "./lib/performRegressionTest.js"
-import RegressionTestPanel from "./components/RegressionTestPanel.jsx";
+import { runCircuit } from "./lib/Circuit.js"
+import CircuitTestPanel from "./components/CircuitTestPanel.jsx";
 
 function App() {
   const [alertVisible, setAlertVisibility] = useState(false)
 
   return (
     <div>
-        <RegressionTestPanel/>
+        <CircuitTestPanel/>
     </div>
   );
 }
