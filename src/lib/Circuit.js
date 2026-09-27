@@ -1,3 +1,5 @@
+// By Benjamin Kerr
+
 import Sim from "./Sim.js";
 import { CMatrix } from "./CMatrix.js";
 
