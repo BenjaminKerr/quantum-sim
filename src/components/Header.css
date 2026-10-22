@@ -1,0 +1,62 @@
+.site-header {
+  text-align: left;
+  margin-bottom: 16px;
+}
+
+/* Logo and name centered as a group; the logo overlaps the name slightly */
+.site-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 0;
+}
+
+.site-logo {
+  display: block;
+  height: 60px;  /* width follows automatically, keeping the logo's proportions */
+  margin-bottom: -10px;
+  width: auto;
+}
+
+.site-name {
+  /* A semi-transparent element is painted in the same layer as positioned
+     elements, i.e. above ordinary ones. Without position: relative here,
+     the faded logo would be drawn on top of the name instead of behind it. */
+  position: relative;
+  margin: 0;
+  font-family: "Georgia", Georgia, serif;
+  font-size: 50px;
+  font-weight: 400;
+  line-height: 1;
+  margin-bottom: -20px;
+  font-style: bold;
+}
+
+/* Empty for now, but keeps its height so the layout doesn't jump
+   when links are added later */
+.site-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  min-height: 32px;
+}
+
+.site-nav a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.site-nav a:hover {
+  text-decoration: underline;
+}
+
+.site-bar {
+  height: 1px;
+  background: CanvasText;
+}
+
+.white-bar {
+  height: 1px;
+  background: white;
+}

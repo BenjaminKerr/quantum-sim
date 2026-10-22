@@ -1,0 +1,48 @@
+/* Three-panel workspace: QASM editor | circuit diagram | results */
+.workspace {
+  display: grid;
+  /* Left and right panels get 1 share each, the diagram gets 2. The
+     minmax(0, ...) on the middle column lets it shrink below its content's
+     width, so a wide diagram scrolls inside its own container instead of
+     stretching the whole page. */
+  grid-template-columns: minmax(240px, 1fr) minmax(0, 2fr) minmax(240px, 1fr);
+  gap: 16px;
+  align-items: start;
+  text-align: left;
+}
+
+.panel {
+  min-width: 0; /* same reason as above: let grid items shrink */
+  border: 1px solid GrayText;
+  padding: 12px;
+}
+
+.panel h2 {
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.qasm-input {
+  width: 100%;
+  box-sizing: border-box;
+  font-family: monospace;
+  font-size: 14px;
+}
+
+.panel pre {
+  margin: 0;
+  overflow-x: auto;
+}
+
+.results-placeholder {
+  margin: 0;
+  opacity: 0.5;
+}
+
+/* On narrow screens, stack the three panels vertically */
+@media (max-width: 900px) {
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+}

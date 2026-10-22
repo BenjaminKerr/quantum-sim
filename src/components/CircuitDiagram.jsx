@@ -2,6 +2,7 @@ import { computeGateColumns, computeDiagramDimensions } from "../lib/CircuitLayo
 
 const SLOT_WIDTH = 64;  // px per column
 const WIRE_HEIGHT = 56; // px per wire (row)
+const LABEL_WIDTH = 48; // px for the wire-label column on the left
 
 // Text shown inside a gate box, e.g. "H" or "RX(90°)"
 function gateLabel(gate) {
@@ -15,6 +16,25 @@ function CircuitDiagram({ circuit }) {
   // Build every cell of the grid, row by row (wire 0 first, slot 0 first).
   const cells = [];
   for (let r = 0; r < numWires; r++) {
+    // The label cell at the start of each row, e.g. "q0". The spare wire's
+    // label is drawn at half opacity, like its wire.
+    cells.push(
+      <div
+        key={`label-${r}`}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "flex-end",
+          paddingRight: 8,
+          fontSize: 14,
+          color: "CanvasText",
+          opacity: r >= circuit.numQubits ? 0.5 : 1,
+        }}
+      >
+        q{r}
+      </div>
+    );
+
     for (let c = 0; c < numSlots; c++) {
       // The gate whose target box sits in this cell, or undefined if none.
       const gateHere = circuit.gates.find((gate, i) => gate.wire === r && columns[i] === c);
@@ -131,7 +151,7 @@ function CircuitDiagram({ circuit }) {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: `repeat(${numSlots}, ${SLOT_WIDTH}px)`,
+          gridTemplateColumns: `${LABEL_WIDTH}px repeat(${numSlots}, ${SLOT_WIDTH}px)`,
           gridTemplateRows: `repeat(${numWires}, ${WIRE_HEIGHT}px)`,
           width: "max-content",
         }}
