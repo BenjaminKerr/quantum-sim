@@ -9,10 +9,12 @@
   gap: 16px;
   align-items: start;
   text-align: left;
+  padding-bottom: 20px;
 }
 
 .panel {
   min-width: 0; /* same reason as above: let grid items shrink */
+  min-height: 500px;
   border: 1px solid GrayText;
   padding: 12px;
 }

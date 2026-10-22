@@ -1,4 +1,5 @@
 import Header from "./components/Header.jsx";
+import Footer from "./components/Footer.jsx";
 import CircuitTestPanel from "./components/CircuitTestPanel.jsx";
 
 function App() {
@@ -6,6 +7,7 @@ function App() {
     <div style={{ width: "80%", margin: "0 auto" }}>
       <Header />
       <CircuitTestPanel />
+      <Footer />
     </div>
   );
 }

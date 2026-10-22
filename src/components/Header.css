@@ -13,7 +13,7 @@
 
 .site-logo {
   display: block;
-  height: 60px;  /* width follows automatically, keeping the logo's proportions */
+  height: 100px;  /* width follows automatically, keeping the logo's proportions */
   margin-bottom: -10px;
   width: auto;
 }
@@ -37,12 +37,16 @@
 .site-nav {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 16px;
+  width: 90%;
+  margin: 0 auto;  /* centers the 90%-wide row inside the header */
   min-height: 32px;
+  font-family: Georgia, "Times New Roman", Times, serif;
+  padding: 15px;
 }
 
 .site-nav a {
+  flex: 1;  /* every link gets an equal share of the row */
+  text-align: center;
   color: inherit;
   text-decoration: none;
 }
