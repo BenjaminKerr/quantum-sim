@@ -1,18 +1,19 @@
-// Overhauled 9/18/2026, implementation by Claude
-// OpenQASM text is kept local, result of parsing is what's shared
-
 import { runCircuit } from "../lib/Circuit.js";
 import { parseCircuit } from "../lib/QasmParser.js";
 import { useState } from "react";
 
 export function useCircuit() {
     const [result, setResult] = useState(false);
+    const [circuit, setCircuit] = useState(null);
     const [error, setError] = useState(null);
 
     function runSimulation(qasmText) {
         try {
-            const circuit = parseCircuit(qasmText);
-            setResult(runCircuit(circuit));
+            // Named parsedCircuit (not circuit) so it doesn't shadow the
+            // state variable above, which would be confusing to read.
+            const parsedCircuit = parseCircuit(qasmText);
+            setResult(runCircuit(parsedCircuit));
+            setCircuit(parsedCircuit);
             setError(null);
         } catch (e) {
             setResult(false);
@@ -20,5 +21,5 @@ export function useCircuit() {
         }
     }
 
-    return { result, error, runSimulation };
+    return { result, circuit, error, runSimulation };
 }

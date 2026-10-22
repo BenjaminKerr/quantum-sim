@@ -4,6 +4,8 @@
 
 // lib/QasmParser.js
 
+import { MAX_QUBITS } from './limits.js';
+
 const KEYWORDS = new Set(['OPENQASM', 'qreg', 'creg', 'measure', 'include']);
 
 // Matches a gate token like "rx(1.5708)" or "h":
@@ -335,6 +337,12 @@ export function parseCircuit(source) {
                     );
                 }
                 registerInfo = parseQreg(classified.rest);
+                if (registerInfo.size > MAX_QUBITS) {
+                    throw new Error(
+                        `Register "${registerInfo.name}" has ${registerInfo.size} qubits, ` +
+                        `but the maximum supported is ${MAX_QUBITS}`
+                    );
+                }
                 break;
             }
 

@@ -1,7 +1,6 @@
-// File overhauled 9/18/2026 by Claude
-
 import { useState } from "react";
 import { useCircuit } from "../hooks/useCircuit";
+import CircuitDiagram from "./CircuitDiagram.jsx";
 
 const DEFAULT_QASM = `OPENQASM 2.0;
 qreg q[2];
@@ -11,7 +10,7 @@ cx q[0],q[1];
 
 function CircuitTestPanel() {
   const [qasmText, setQasmText] = useState(DEFAULT_QASM);
-  const { result, error, runSimulation } = useCircuit();
+  const { result, circuit, error, runSimulation } = useCircuit();
 
   return (
     <div>
@@ -24,6 +23,8 @@ function CircuitTestPanel() {
       <div>
         <button onClick={() => runSimulation(qasmText)}>Run</button>
       </div>
+
+      { circuit && <CircuitDiagram circuit={circuit} /> }
 
       { error && (
         <div>
