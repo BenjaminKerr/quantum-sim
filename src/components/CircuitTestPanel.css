@@ -1,11 +1,7 @@
 /* Three-panel workspace: QASM editor | circuit diagram | results */
 .workspace {
-  display: grid;
-  /* Left and right panels get 1 share each, the diagram gets 2. The
-     minmax(0, ...) on the middle column lets it shrink below its content's
-     width, so a wide diagram scrolls inside its own container instead of
-     stretching the whole page. */
-  grid-template-columns: minmax(240px, 1fr) minmax(0, 2fr) minmax(240px, 1fr);
+  display: flex;
+  flex-wrap: wrap;
   gap: 16px;
   align-items: start;
   text-align: left;
@@ -13,11 +9,30 @@
 }
 
 .panel {
-  min-width: 0; /* same reason as above: let grid items shrink */
-  min-height: 500px;
+  flex: 1 1 calc(33.333% - 11px); /* Three equal columns */
+  min-width: 0;
+  height: 300px;
   border: 1px solid GrayText;
   padding: 12px;
 }
+
+.panel.qasm {
+  flex: 1 1 20%;
+}
+
+.panel.toolbox {
+  flex: 2 1 40%;
+}
+
+.panel.results {
+  flex: 1 1 20%;
+}
+
+.panel.diagram {
+  flex: 1 0 100%;
+  height: auto;
+}
+
 
 .panel h2 {
   margin: 0 0 8px;
@@ -27,9 +42,13 @@
 
 .qasm-input {
   width: 100%;
-  box-sizing: border-box;
   font-family: monospace;
-  font-size: 14px;
+  font-size: 12px;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  resize: none;
+  height: 220px;
 }
 
 .panel pre {
@@ -44,7 +63,10 @@
 
 /* On narrow screens, stack the three panels vertically */
 @media (max-width: 900px) {
-  .workspace {
-    grid-template-columns: 1fr;
+  .panel {
+    flex: 1 0 100%;
+  }
+  .panel.toolbox {
+    visibility: collapse;
   }
 }

@@ -37,8 +37,8 @@
 .site-nav {
   display: flex;
   align-items: center;
-  width: 90%;
-  margin: 0 auto;  /* centers the 90%-wide row inside the header */
+  width: 100%;
+  margin: auto;  /* centers the 90%-wide row inside the header */
   min-height: 32px;
   font-family: Georgia, "Times New Roman", Times, serif;
   padding: 15px;
@@ -63,4 +63,14 @@
 .white-bar {
   height: 1px;
   background: white;
+}
+
+@media (max-width: 900px) {
+    .site-nav {
+        flex-wrap: wrap;
+    }
+    
+    .site-nav a {
+        flex: 0 0 33%; /* Each link takes 50% width = 2 per row */
+    }
 }

@@ -143,6 +143,24 @@ function CircuitDiagram({ circuit }) {
         </div>
       );
     }
+
+    // Extra cell at the end of the row: just wire, stretching to the right
+    // edge so the wire covers the full width of the panel.
+    cells.push(
+      <div key={`tail-${r}`} style={{ position: "relative" }}>
+        <div
+          style={{
+            position: "absolute",
+            left: 0,
+            right: 0,
+            top: "50%",
+            height: 2,
+            background: "CanvasText",
+            opacity: r >= circuit.numQubits ? 0.5 : 1,
+          }}
+        />
+      </div>
+    );
   }
 
   return (
@@ -151,9 +169,10 @@ function CircuitDiagram({ circuit }) {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: `${LABEL_WIDTH}px repeat(${numSlots}, ${SLOT_WIDTH}px)`,
+          gridTemplateColumns: `${LABEL_WIDTH}px repeat(${numSlots}, ${SLOT_WIDTH}px) 0.95fr`,
           gridTemplateRows: `repeat(${numWires}, ${WIRE_HEIGHT}px)`,
-          width: "max-content",
+          width: "100%",
+          minWidth: "max-content",
         }}
       >
         {cells}

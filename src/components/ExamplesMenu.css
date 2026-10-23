@@ -1,0 +1,46 @@
+/* Takes one equal slot in the nav row, like the plain links do */
+.nav-dropdown {
+  flex: 1;
+  position: relative; /* anchors the menu to this slot */
+  text-align: center;
+}
+
+/* Buttons restyled to look like the surrounding links */
+.nav-dropdown-toggle,
+.nav-dropdown-menu button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.nav-dropdown-toggle:hover {
+  text-decoration: underline;
+}
+
+.nav-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10; /* above the bar and the workspace below */
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  padding: 4px 0;
+  background: Canvas;
+  border: 1px solid GrayText;
+  text-align: left;
+}
+
+.nav-dropdown-menu button {
+  padding: 8px 12px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.nav-dropdown-menu button:hover {
+  background: color-mix(in srgb, CanvasText 12%, transparent);
+}

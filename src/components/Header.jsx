@@ -1,31 +1,36 @@
 import logo from "../assets/logo.png";
+import ExamplesMenu from "./ExamplesMenu.jsx";
 import "./Header.css";
 
-const NAV_LINKS = [
+// Most items are plain links; the one marked `dropdown` renders the menu.
+const NAV_ITEMS = [
     { label: "zoneq", href: "#" },
     { label: "tutorial", href: "#" },
-    { label: "github", href: "#" },
+    { label: "examples", dropdown: true },
     { label: "about", href: "#" },
-    { label: "buy me a coffee", href: "#" },
     { label: "settings", href: "#" },
 ];
 
-function Header() {
+function Header({ onSelectExample }) {
     return (
         <header className="site-header">
             {/* Title card: logo next to the site name */}
-            <div className="site-title">
+            <div className="site-title" >
                 <img className="site-logo" src={logo} alt="Zone logo" />
-                {/* <h1 className="site-name">zone</h1> */}
 
             </div>
 
-            {/* Reserved space for navigation links, e.g. <a href="#">Tutorial</a> */}
+            {/* Navigation links; the "examples" item opens a dropdown */}
             <nav className="site-nav" aria-label="Main navigation">
-                {NAV_LINKS.map(link => (
-                    <a key={link.label} href={link.href}>{link.label}</a>
-                ))}
+                {NAV_ITEMS.map(item =>
+                    item.dropdown ? (
+                        <ExamplesMenu key={item.label} onSelectExample={onSelectExample} />
+                    ) : (
+                        <a key={item.label} href={item.href}>{item.label}</a>
+                    )
+                )}
             </nav>
+
 
             {/* Horizontal bar closing off the header */}
             <div className="site-bar" />

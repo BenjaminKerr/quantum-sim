@@ -6,11 +6,12 @@
 .languages {
     display: flex;
     align-items: center;
-    width: 90%;
+    width: 60%;
     margin: 0 auto;
     /* centers the 90%-wide row inside the header */
     min-height: 32px;
     font-family: Georgia, "Times New Roman", Times, serif;
+    font-size: 14px;
     padding: 15px;
 }
 

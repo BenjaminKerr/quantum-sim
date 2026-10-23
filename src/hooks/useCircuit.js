@@ -13,26 +13,29 @@ function tryParse(qasmText) {
 }
 
 export function useCircuit(initialQasm) {
+    // The QASM text now lives here (it used to live in CircuitTestPanel), so
+    // that anything in the app can change it, e.g. the examples menu.
+    const [qasmText, setQasmTextState] = useState(initialQasm);
     const [result, setResult] = useState(false);
     // Passing a function to useState means React calls it only on the first
-    // render. Without the () => wrapper, tryParse would re-run (and re-parse
-    // the text) on every render, and its result would be thrown away.
+    // render, instead of re-parsing on every render.
     const [circuit, setCircuit] = useState(() => tryParse(initialQasm));
     const [error, setError] = useState(null);
 
-    // Called on every keystroke. If the text parses, the diagram follows it.
-    // If not (e.g. the user is halfway through typing a statement), we do
-    // nothing, so the diagram keeps showing the last text that did parse.
-    function updateCircuitFromText(qasmText) {
-        const parsed = tryParse(qasmText);
+    // Every change to the text goes through here, whether it was typed or
+    // loaded from an example. If the new text parses, the diagram follows it;
+    // if not (e.g. mid-typing), the diagram keeps the last text that parsed.
+    function setQasmText(newText) {
+        setQasmTextState(newText);
+        const parsed = tryParse(newText);
         if (parsed !== null) {
             setCircuit(parsed);
         }
     }
 
     // Called by the Run button. Parsing is cheap, so it happens on every
-    // keystroke, but simulation can get expensive, so it only happens here.
-    function runSimulation(qasmText) {
+    // change, but simulation can get expensive, so it only happens here.
+    function runSimulation() {
         try {
             const parsedCircuit = parseCircuit(qasmText);
             setResult(runCircuit(parsedCircuit));
@@ -43,5 +46,5 @@ export function useCircuit(initialQasm) {
         }
     }
 
-    return { result, circuit, error, runSimulation, updateCircuitFromText };
+    return { qasmText, setQasmText, result, circuit, error, runSimulation };
 }
