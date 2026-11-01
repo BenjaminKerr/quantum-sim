@@ -5,7 +5,7 @@ const LANGUAGES = [
     { label: "english", href: "#" },
     { label: "español", href: "#" },
     { label: "français", href: "#" },
-    { label: "pусский", href: "#" },
+    { label: "हिन्दी", href: "#" },
     { label: "العربية", href: "#" },
     { label: "中文", href: "#" },
 ];

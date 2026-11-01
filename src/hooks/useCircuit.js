@@ -27,6 +27,8 @@ export function useCircuit(initialQasm) {
     // if not (e.g. mid-typing), the diagram keeps the last text that parsed.
     function setQasmText(newText) {
         setQasmTextState(newText);
+        setResult(null);
+        setError(null);
         const parsed = tryParse(newText);
         if (parsed !== null) {
             setCircuit(parsed);
