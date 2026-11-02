@@ -10,8 +10,9 @@ const DEFAULT_QASM = EXAMPLES[0].qasm;
 function App() {
   // The hook is called here, in the common parent, so both the header
   // (examples menu) and the panel (editor, diagram, results) can use it.
-  const { qasmText, setQasmText, result, circuit, error, runSimulation } = useCircuit(DEFAULT_QASM);
-
+  const { qasmText, setQasmText, result, circuit, error, parseError, runSimulation } =
+    useCircuit(DEFAULT_QASM);
+    
   return (
     <div style={{ width: "80%", margin: "0 auto" }}>
       <Header onSelectExample={setQasmText} />
@@ -22,6 +23,7 @@ function App() {
         result={result}
         circuit={circuit}
         error={error}
+        parseError={parseError}
       />
 
       <Footer />

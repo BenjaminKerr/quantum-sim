@@ -21,6 +21,7 @@ export function useCircuit(initialQasm) {
     // render, instead of re-parsing on every render.
     const [circuit, setCircuit] = useState(() => tryParse(initialQasm));
     const [error, setError] = useState(null);
+    const [parseError, setParseError] = useState(null); // { message, line } | null
 
     // Every change to the text goes through here, whether it was typed or
     // loaded from an example. If the new text parses, the diagram follows it;
@@ -29,9 +30,12 @@ export function useCircuit(initialQasm) {
         setQasmTextState(newText);
         setResult(null);
         setError(null);
-        const parsed = tryParse(newText);
-        if (parsed !== null) {
-            setCircuit(parsed);
+        try {
+            setCircuit(parseCircuit(newText));
+            setParseError(null);
+        }
+        catch (e) {
+            setParseError({ message: e.message, line: e.line ?? null });
         }
     }
 
@@ -48,5 +52,5 @@ export function useCircuit(initialQasm) {
         }
     }
 
-    return { qasmText, setQasmText, result, circuit, error, runSimulation };
+    return { qasmText, setQasmText, result, circuit, error, parseError, runSimulation };
 }

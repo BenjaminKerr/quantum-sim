@@ -1,14 +1,19 @@
 import CircuitDiagram from "./CircuitDiagram.jsx";
 import CodeMirror from "@uiw/react-codemirror";
+import { useEffect, useRef } from "react";
+import { lintGutter } from "@codemirror/lint";
 import { qasmLanguage } from "../lib/qasmLanguage.js";
+import { applyParseError } from "../lib/qasmLint.js";
 import "./CircuitTestPanel.css";
 
-// The panel no longer owns any state: App passes in the text, the results,
-// and the functions to call.
-function CircuitTestPanel({ qasmText, onTextChange, onRun, result, circuit, error }) {
-  function handleTextChange(e) {
-    onTextChange(e.target.value);
-  }
+const extensions = [qasmLanguage, lintGutter()]; // static, so defined outside the component
+
+function CircuitTestPanel({ qasmText, onTextChange, onRun, result, circuit, error, parseError }) {
+  const viewRef = useRef(null);
+
+  useEffect(() => {
+    applyParseError(viewRef.current, parseError);
+  }, [parseError, qasmText]);
 
   return (
     <div className="workspace">
@@ -18,7 +23,8 @@ function CircuitTestPanel({ qasmText, onTextChange, onRun, result, circuit, erro
           className="qasm-input"
           value={qasmText}
           onChange={(value) => onTextChange(value)}
-          extensions={[qasmLanguage]}
+          extensions={extensions}
+          onCreateEditor={(view) => { viewRef.current = view; }}
           height="200px"
           basicSetup={{ lineNumbers: true }}
         />

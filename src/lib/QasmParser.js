@@ -28,18 +28,32 @@ function stripComments(source) {
         .join('\n');
 }
 
-/**
- * Splits OpenQASM source into an array of clean, non-empty
- * statement strings (comments removed, whitespace trimmed,
- * no trailing/blank entries).
- */
-export function parseStatements(source) {
-    const withoutComments = stripComments(source);
+function countNewlines(text) {
+    return text.split('\n').length - 1;
+}
 
-    return withoutComments
-        .split(';')
-        .map(stmt => stmt.trim())
-        .filter(stmt => stmt.length > 0);
+/**
+ * Each entry is { text, line }, where `line` is the
+ * 1-based line of the source on which the statement's first character sits.
+ */
+export function splitStatements(source) {
+    const withoutComments = stripComments(source);
+    const statements = [];
+    let line = 1; // line number at the start of the current piece
+
+    for (const piece of withoutComments.split(';')) {
+        const text = piece.trim();
+        if (text.length > 0) {
+            const leading = piece.slice(0, piece.length - piece.trimStart().length);
+            statements.push({ text, line: line + countNewlines(leading) });
+        }
+        line += countNewlines(piece); // a ';' itself never contains a newline
+    }
+    return statements;
+}
+
+export function parseStatements(source) {
+    return splitStatements(source).map(s => s.text);
 }
 
 /**
@@ -315,60 +329,68 @@ function buildGateEntry(classifiedGate, registerInfo) {
  * this and display the message rather than let it crash the app.
  */
 export function parseCircuit(source) {
-    const statements = parseStatements(source);
+    const statements = splitStatements(source);
 
     let registerInfo = null; // { name, size }, set once qreg is seen
     const gates = [];
 
-    for (const statement of statements) {
-        const classified = classifyStatement(statement);
+    for (const { text: statement, line } of statements) {
+        try {
+            const classified = classifyStatement(statement);
 
-        switch (classified.type) {
-            case 'openqasm': {
-                // Version check intentionally lenient for now — just no-op.
-                break;
-            }
-
-            case 'qreg': {
-                if (registerInfo !== null) {
-                    throw new Error(
-                        `Duplicate qreg declaration: "qreg ${classified.rest};" ` +
-                        `(register "${registerInfo.name}" was already declared)`
-                    );
+            switch (classified.type) {
+                case 'openqasm': {
+                    // Version check intentionally lenient for now — just no-op.
+                    break;
                 }
-                registerInfo = parseQreg(classified.rest);
-                if (registerInfo.size > MAX_QUBITS) {
-                    throw new Error(
-                        `Register "${registerInfo.name}" has ${registerInfo.size} qubits, ` +
-                        `but the maximum supported is ${MAX_QUBITS}`
-                    );
+
+                case 'qreg': {
+                    if (registerInfo !== null) {
+                        throw new Error(
+                            `Duplicate qreg declaration: "qreg ${classified.rest};" ` +
+                            `(register "${registerInfo.name}" was already declared)`
+                        );
+                    }
+                    registerInfo = parseQreg(classified.rest);
+                    if (registerInfo.size > MAX_QUBITS) {
+                        throw new Error(
+                            `Register "${registerInfo.name}" has ${registerInfo.size} qubits, ` +
+                            `but the maximum supported is ${MAX_QUBITS}`
+                        );
+                    }
+                    break;
                 }
-                break;
-            }
 
-            case 'noop': {
-                // creg, measure, include — intentionally not yet supported.
-                break;
-            }
-
-            case 'gate': {
-                if (registerInfo === null) {
-                    throw new Error(
-                        `Gate statement "${statement}" appears before any qreg declaration`
-                    );
+                case 'noop': {
+                    // creg, measure, include — intentionally not yet supported.
+                    break;
                 }
-                gates.push(buildGateEntry(classified, registerInfo));
-                break;
-            }
 
-            case 'unknown': {
-                throw new Error(`Could not parse statement: "${classified.statement}"`);
-            }
+                case 'gate': {
+                    if (registerInfo === null) {
+                        throw new Error(
+                            `Gate statement "${statement}" appears before any qreg declaration`
+                        );
+                    }
+                    gates.push(buildGateEntry(classified, registerInfo));
+                    break;
+                }
 
-            default: {
-                // Should be unreachable given classifyStatement's return shape.
-                throw new Error(`Unhandled statement type: "${classified.type}"`);
+                case 'unknown': {
+                    throw new Error(`Could not parse statement: "${classified.statement}"`);
+                }
+
+                default: {
+                    // Should be unreachable given classifyStatement's return shape.
+                    throw new Error(`Unhandled statement type: "${classified.type}"`);
+                }
+
             }
+        }
+        catch (err) {
+            const wrapped = new Error(`Line ${line}: ${err.message}`);
+            wrapped.line = line;
+            throw wrapped;
         }
     }
 
